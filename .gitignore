@@ -1,0 +1,15 @@
+appearances/
+backgrounds/
+containers/
+default/
+devices/
+humans/
+objects/
+obstacles/
+robots/
+venv/
+robot/controllers/venv/
+__pycache__/
+*.pyc
+*.pyo
+robot/controllers/crowd-aware/models/

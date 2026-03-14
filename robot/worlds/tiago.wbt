@@ -1,0 +1,101 @@
+#VRML_SIM R2025a utf8
+EXTERNPROTO "/home/luigi/webots/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "/home/luigi/webots/projects/appearances/protos/BrushedAluminium.proto"
+EXTERNPROTO "/home/luigi/webots/projects/objects/solids/protos/SolidBox.proto"
+EXTERNPROTO "/home/luigi/webots/projects/devices/hokuyo/protos/HokuyoUrg04lxug01.proto"
+EXTERNPROTO "/home/luigi/webots/projects/devices/orbbec/protos/Astra.proto"
+EXTERNPROTO "/home/luigi/webots/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "/home/luigi/webots/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "/home/luigi/webots/projects/appearances/protos/ThreadMetalPlate.proto"
+EXTERNPROTO "/home/luigi/webots/projects/appearances/protos/Roughcast.proto"
+EXTERNPROTO "/home/luigi/webots/projects/objects/factory/containers/protos/WoodenBox.proto"
+EXTERNPROTO "/home/luigi/webots/projects/objects/obstacles/protos/OilBarrel.proto"
+EXTERNPROTO "/home/luigi/webots/projects/humans/pedestrian/protos/Pedestrian.proto"
+EXTERNPROTO "../protos/Tiago.proto"
+EXTERNPROTO "../../floors/protos/RectangleArena.proto"
+WorldInfo {
+  info [
+    "This simulation shows a TIAGo making hello in an industrial environment. It can also been controlled using the keyboard arrows."
+  ]
+  title "Simulation of PAL Robotics' TIAGo robot"
+  contactProperties [
+    ContactProperties {
+      softCFM 0.0002
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.5020529836758705 0.21844615799825287 0.8367939278209173 2.4432482305407555
+  position 8.258395658803792 -8.940014097743338 22.126196415850718
+}
+TexturedBackground {
+  texture "factory"
+  skybox FALSE
+}
+TexturedBackgroundLight {
+  texture "factory"
+}
+RectangleArena {
+  floorSize 10 7
+  floorTileSize 1 1
+  floorAppearance ThreadMetalPlate {
+  }
+  wallHeight 2.5
+  wallAppearance Roughcast {
+    colorOverride 0.533333 0.541176 0.521569
+    textureTransform TextureTransform {
+      scale 5 1.75
+    }
+  }
+}
+DEF TIAGO Tiago {
+  hidden rotation_10 0.5773502689377967 0.5773502696932832 0.5773502689377976 2.0943999992444535
+  translation -4.4156145689597395 1.0623118146367838 0.09607343615350813
+  rotation 0.8695246504947197 0.49388951215774357 0.00017878093175134377 0.007923041628190937
+  controller "crowd-aware"
+  supervisor TRUE
+}
+WoodenBox {
+  translation -1.01249 1.89786 0.36
+  rotation 0 0 1 -2.618
+  name "wooden box(3)"
+}
+WoodenBox {
+  translation 0.0895325 -0.711093 0.3
+  rotation 0 0 1 0.262
+  name "wooden box(5)"
+}
+OilBarrel {
+  translation 2.64 -0.717 0.44
+}
+OilBarrel {
+  translation -2.6 -2.09 0.44
+  name "oil barrel(6)"
+}
+OilBarrel {
+  translation 1.75 2.26 0.44
+  name "oil barrel(7)"
+}
+DEF PEDESTRIAN Pedestrian {
+  translation -2.21 3 1.27
+  rotation 0 0 1 -1.5707953071795862
+  controller "pedestrian_local"
+  controllerArgs [
+    "--trajectory=-2 3, -2 0"
+    "--speed=0.3"
+  ]
+  enableBoundingObject TRUE
+  rightLegAngle -0.6495999999999981
+  rightLowerLegAngle 0.6160000000000048
+  rightFootAngle -0.23039999999999508
+  leftLegAngle 0.057999999999987034
+  leftLowerLegAngle 0.6704000000000155
+  leftFootAngle -0.01959999999999809
+  rightArmAngle 0.6351999999999975
+  rightLowerArmAngle -0.4124000000000012
+  rightHandAngle 0.12799999999999728
+  leftArmAngle -0.6607999999999971
+  leftLowerArmAngle -0.13439999999999713
+  leftHandAngle 0.04320000000000163
+  headAngle 0.12240000000000123
+}
