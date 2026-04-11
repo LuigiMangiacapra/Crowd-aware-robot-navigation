@@ -8,9 +8,9 @@ class CrowdNavNet(nn.Module):
                  spatial_dim,
                  temporal_dim,
                  goal_dim,
-                 human_pref_dim=3,
+                 human_pref_dim=4,
                  n_robot_actions=5,
-                 n_human_actions=3):
+                 n_human_actions=4):
         super().__init__()
 
         # =====================================
@@ -36,35 +36,51 @@ class CrowdNavNet(nn.Module):
         )
 
         # =====================================
-        # GOAL → 64 (single FC)
+        # GOAL → 64 (single Fully Connected)
         # =====================================
         self.goal_fc = nn.Linear(goal_dim, 64)
 
         # =====================================
-        # OUTPUT DIMENSION (paper)
+        # LAYER NORMALIZATION  ← aggiunto
         # =====================================
-        self.output_dim = 64 + 64 + 64 + human_pref_dim   # 195
+        self.ln_spatial = nn.LayerNorm(64)
+        self.ln_temporal = nn.LayerNorm(64)
+        self.ln_goal = nn.LayerNorm(64)
+
+        # =====================================
+        # OUTPUT DIMENSION
+        # =====================================
+        self.output_dim = 64 + 64 + 64 + human_pref_dim
 
     # =====================================
     # FORWARD
     # =====================================
     def forward(self, spatial, temporal, goal, human_pref):
-
-        # spatial RNN
         _, h_spatial = self.spatial_net(spatial)
-        spatial_feat = h_spatial[-1]   # last layer hidden
+        spatial_feat = self.ln_spatial(h_spatial[-1])
 
-        # temporal RNN
         _, h_temporal = self.temporal_net(temporal)
-        temporal_feat = h_temporal[-1]
+        temporal_feat = self.ln_temporal(h_temporal[-1])
 
-        # goal
-        goal_feat = self.goal_fc(goal)
+        goal_feat = self.ln_goal(self.goal_fc(goal))
 
-        # concat DIRECT (no fusion MLP)
         fused = torch.cat(
             [spatial_feat, temporal_feat, goal_feat, human_pref],
             dim=1
         )
-
         return fused
+
+    # h_spatial = None
+    # h_temporal = None
+
+    # def forward(self, spatial, temporal, goal, human_pref, h_spatial=None, h_temporal=None):
+    #     out_s, h_spatial_new = self.spatial_net(spatial,  h_spatial)
+    #     out_t, h_temporal_new = self.temporal_net(temporal, h_temporal)
+
+    #     spatial_feat = h_spatial_new[-1]
+    #     temporal_feat = h_temporal_new[-1]
+
+    #     goal_feat = self.goal_fc(goal)
+    #     fused = torch.cat([spatial_feat, temporal_feat, goal_feat, human_pref], dim=1)
+
+    #     return fused, h_spatial_new, h_temporal_new
