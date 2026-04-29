@@ -78,7 +78,7 @@ class Pedestrian (Supervisor):
             print("You should specify the trajectory using the '--trajectory' option.")
             print("The trajectory should have at least 2 points.")
             return
-        if options.speed and options.speed > 0:
+        if options.speed is not None:
             self.speed = options.speed
         if options.step and options.step > 0:
             self.time_step = options.step
