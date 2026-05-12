@@ -18,20 +18,27 @@ class CrowdNavNet(nn.Module):
         # =============================
         self.spatial_gru = nn.GRU(
             input_size=spatial_dim,
-            hidden_size=64,
-            num_layers=1,
-            batch_first=True
+            hidden_size=128,
+            num_layers=3,
+            batch_first=True,
+            dropout=0.1   # consigliato con 3 layer
         )
+        self.spatial_proj = nn.Linear(128, 64)  # proietta a 64 come da paper
+
+
 
         # =============================
         # TEMPORAL GRU (3 layers)
         # =============================
         self.temporal_gru = nn.GRU(
             input_size=temporal_dim,
-            hidden_size=64,
-            num_layers=1,
-            batch_first=True
+            hidden_size=128,
+            num_layers=3,
+            batch_first=True,
+            dropout=0.1   # consigliato con 3 layer
         )
+        self.temporal_proj = nn.Linear(128, 64)  # proietta a 64 come da paper
+
 
         # =============================
         # GOAL
@@ -51,13 +58,13 @@ class CrowdNavNet(nn.Module):
         # SPATIAL
         # =============================
         _, h_spatial = self.spatial_gru(spatial)
-        spatial_feat = h_spatial[-1]   # ultimo layer → [B, 64]
+        spatial_feat = self.activation(self.spatial_proj(h_spatial[-1]))
 
         # =============================
         # TEMPORAL
         # =============================
         _, h_temporal = self.temporal_gru(temporal)
-        temporal_feat = h_temporal[-1]  # [B, 64]
+        temporal_feat = self.activation(self.temporal_proj(h_temporal[-1]))
 
         # =============================
         # GOAL
