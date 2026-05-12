@@ -1,57 +1,52 @@
 thiago:
-
-  # =========================================================
-  # ENVIRONMENT
-  # =========================================================
   environment: "webots"
-
 
   # =========================================================
   # TRAINING CONTROL
   # =========================================================
   n_episodes: 6000
-  # max_timestep: 1000  # valore massimo di step per episodio
-  max_timestep: 300    # era 1000 → 300 decisioni × 192ms = ~57s per episodio
+  max_timestep: 300        # 300 × 0.192s ≈ 57.6s, identico al paper
 
   # =========================================================
-  # EXPLORATION (EPSILON GREEDY)
+  # EXPLORATION
   # =========================================================
   epsilon: 1.0
   min_epsilon: 0.05
-  # epsilon_steps: 400000
-  epsilon_steps: 80000
-
+  # Paper: epsilon scende in 30.000 step su 900k totali = 3.3%
+  # Tuo caso: 6000 × 300 = 1.800.000 step totali → 3.3% = 60.000 ✓
+  # MA: vuoi che esplori più a lungo → almeno 20% degli step
+  epsilon_steps: 180000    # era 60000 → ora copre i primi 2000 ep circa
 
   # =========================================================
   # REINFORCEMENT LEARNING CORE
   # =========================================================
   discount_factor: 0.99
-  learning_rate_dqn: 3e-5
-  learning_rate_rnn: 5e-5
-
+  learning_rate_dqn: 1e-4
+  learning_rate_rnn: 1e-4
 
   # =========================================================
   # MEMORY / BATCHING
   # =========================================================
-  memory_maxlen: 150000
-  batch_size: 128
-
+  memory_maxlen: 100000    # era 50000 → più buffer = meno correlazione
+  batch_size: 64           # identico al paper (K=64)
 
   # =========================================================
-  # PREFERENCE MODELING (MULTI-OBJECTIVE)
+  # PREFERENCE MODELING
   # =========================================================
-  n_pref_samples: 6
-
+  n_pref_samples: 32       # identico al paper (M=32)
 
   # =========================================================
   # TARGET NETWORK UPDATE
   # =========================================================
-  target_update_freq: 4000 # ogni quanti episodi aggiornare la target network
-
+  # Paper: ogni B=100 step globali
+  # Tuo caso: 100 step globali è corretto ma "target_update_freq: 200"
+  # nel tuo codice è in step globali (global_step), quindi:
+  target_update_freq: 1000  # era 200 → portalo al valore del paper
 
   # =========================================================
-  # LUNGHEZZA HISTORY PER SPATIAL E TEMPORAL ENCODING
+  # HISTORY LENGTH
   # =========================================================
-  # steps_len: 30  # numero di passi da considerare per la storia (spatial e temporal)
-  steps_len: 20        # era 30 → 20 × 192ms = 3.84s di storia — ottimo
-
+  # Paper: RNN a 3 layer, nessuna finestra esplicita
+  # Tu: 10 step × 0.192s = 1.92s di storia
+  # Suggerito: 15 step × 0.192s = 2.88s, più informativo
+  steps_len: 15            # era 10 → leggero aumento senza costo eccessivo
